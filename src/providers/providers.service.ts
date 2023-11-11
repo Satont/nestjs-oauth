@@ -4,8 +4,6 @@ import { BaseService } from './services/base';
 
 @Injectable()
 export class ProvidersService implements OnModuleInit {
-  private mappedServices: BaseService;
-
   constructor(@Inject(ProvidersOptsSymbol) private readonly opts: Opts) {}
 
   onModuleInit() {

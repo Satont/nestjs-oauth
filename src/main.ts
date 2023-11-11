@@ -16,6 +16,7 @@ async function bootstrap() {
       cookie: {
         sameSite: true,
         httpOnly: true,
+        // это время жизни сессии в куки в миллисекундах, можно установить в 1 неделю
         maxAge: 60000,
       },
     }),

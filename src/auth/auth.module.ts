@@ -8,6 +8,7 @@ import { GithubProvider } from '../providers/services/githubProvider';
 import { GoogleProvider } from '../providers/services/googleProvider';
 import { YandexProvider } from '../providers/services/yandexProvider';
 import { VkProvider } from '../providers/services/vkProvider';
+import { AuthProviderGuard } from './guards/provider';
 
 @Module({
   imports: [
@@ -43,7 +44,7 @@ import { VkProvider } from '../providers/services/vkProvider';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, AuthProviderGuard],
   exports: [AuthService],
   controllers: [AuthController],
 })

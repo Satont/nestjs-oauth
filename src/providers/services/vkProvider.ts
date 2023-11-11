@@ -15,7 +15,7 @@ export class VkProvider extends BaseService {
     });
   }
 
-  extractUserInfo(data: VkProfile): BaseUserInfo {
+  async extractUserInfo(data: VkProfile): Promise<BaseUserInfo> {
     return super.extractUserInfo({
       id: data.response[0].id.toString(),
       avatarUrl: data.response[0].photo_100,
@@ -315,4 +315,5 @@ interface VkProfile {
     };
     is_no_index?: 0 | 1;
   }>;
+  access_token: string;
 }

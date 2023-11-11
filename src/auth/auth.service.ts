@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ProvidersService } from '../providers/providers.service';
 import { Provider, UsersService } from '../users/users.service';
@@ -12,14 +12,8 @@ export class AuthService {
   ) {}
 
   async extractProfileFromCode(provider: Provider, code: string) {
+    // тут оно не будет не найдено, потому что мы ещё в контроллере через guard проверили, что провайдер существует
     const providerInstance = this.providersService.findService(provider);
-    if (!providerInstance) {
-      throw new HttpException(
-        `No provider found "${provider}"`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
     const profile = await providerInstance.getUserByCode(code);
 
     let user = await this.usersService.findUserByProviderAccountId(

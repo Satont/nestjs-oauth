@@ -15,7 +15,7 @@ export class YandexProvider extends BaseService {
     });
   }
 
-  extractUserInfo(data: YandexProfile): BaseUserInfo {
+  async extractUserInfo(data: YandexProfile): Promise<BaseUserInfo> {
     return super.extractUserInfo({
       id: data.id,
       avatarUrl: data.default_avatar_id
@@ -89,4 +89,6 @@ interface YandexProfile {
    * number: The user's phone number.
    */
   default_phone?: { id: number; number: string };
+  access_token: string;
+  refresh_token?: string;
 }

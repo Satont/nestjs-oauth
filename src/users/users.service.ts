@@ -27,22 +27,22 @@ export type User = {
 @Injectable()
 export class UsersService {
   private mockedUsers = [
-    {
-      userId: 1,
-      name: 'Satont',
-      email: null,
-      avatarUrl: 'https://avatars.githubusercontent.com/u/42675886?v=4',
-    },
+    // {
+    //   userId: 1,
+    //   name: 'Satont',
+    //   email: null,
+    //   avatarUrl: 'https://avatars.githubusercontent.com/u/42675886?v=4',
+    // },
   ];
   private mockedUsersProvidersAccounts: Account[] = [
-    {
-      userId: 1,
-      provider: Provider.GITHUB,
-      providerAccountId: '42675886',
-      // просто скрыл токены, чтобы на стриме не видно, в прод базе они будут
-      access_token: '',
-      refresh_token: '',
-    },
+    // {
+    //   userId: 1,
+    //   provider: Provider.GITHUB,
+    //   providerAccountId: '42675886',
+    //   // просто скрыл токены, чтобы на стриме не видно, в прод базе они будут
+    //   access_token: '',
+    //   refresh_token: '',
+    // },
   ];
 
   async findByEmail(email: string) {

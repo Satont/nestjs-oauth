@@ -1,4 +1,4 @@
-import { BaseService, BaseUserInfo, ProviderOpts } from './base';
+import { BaseService, ProviderOpts } from './base';
 
 export class GithubProvider extends BaseService {
   constructor(opts: ProviderOpts) {
@@ -15,7 +15,8 @@ export class GithubProvider extends BaseService {
     });
   }
 
-  extractUserInfo(data: GitHubProfile) {
+  async extractUserInfo(data: GitHubProfile) {
+    // тут надо сделать запрос к гитхабу с access_token из data чтобы получить email
     return super.extractUserInfo({
       id: data.id.toString(),
       avatarUrl: data.avatar_url,
@@ -71,5 +72,7 @@ interface GitHubProfile {
     space: number;
     private_repos: number;
   };
+  access_token: string;
+  refresh_token: string;
   [claim: string]: unknown;
 }

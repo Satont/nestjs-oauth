@@ -15,7 +15,7 @@ export class GoogleProvider extends BaseService {
     });
   }
 
-  extractUserInfo(data: GoogleProfile): BaseUserInfo {
+  async extractUserInfo(data: GoogleProfile): Promise<BaseUserInfo> {
     return super.extractUserInfo({
       id: data.sub,
       avatarUrl: data.picture,
@@ -42,4 +42,6 @@ interface GoogleProfile extends Record<string, any> {
   nbf?: number;
   picture: string;
   sub: string;
+  access_token: string;
+  refresh_token?: string;
 }

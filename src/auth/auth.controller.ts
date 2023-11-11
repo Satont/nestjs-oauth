@@ -13,7 +13,8 @@ import { AuthService } from './auth.service';
 import { Provider } from '../users/users.service';
 import { ProvidersService } from '../providers/providers.service';
 import { Request } from 'express';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from './guards/auth';
+import { AuthProviderGuard } from './guards/provider';
 
 @Controller('auth')
 export class AuthController {
@@ -23,7 +24,8 @@ export class AuthController {
   ) {}
 
   @Get('/callback/:provider')
-  @Redirect()
+  // заранее проверяем, что имя провайдера валидно
+  @UseGuards(AuthProviderGuard)
   async callBack(
     @Req() req: Request,
     @Query('code') code: string,
@@ -31,6 +33,8 @@ export class AuthController {
   ) {
     if (!code) throw new HttpException('No code provided', 400);
 
+    // ОН НЕ МОЖЕТ СОХРАНИТЬ ПРОСТО АЙДИШНИК, ПОТОМУ ЧТО ЭТО НЕ СЕРИАЛИЗУЕТСЯ
+    // ТАК ЧТО ЛУЧШЕ ЗАПИХИВАЙ ОБЪЕКТ ЦЕЛИКОМ ИЛИ ЗАПИХИВАЙ user = { id: '123' }
     req.session.user = await this.authService.extractProfileFromCode(
       provider,
       code,
@@ -39,43 +43,41 @@ export class AuthController {
     await new Promise((resolve, reject) => {
       req.session.save((err) => {
         if (err) {
-          return reject(err);
+          return reject(
+            new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR),
+          );
         }
-        resolve(
-          'All done, now navigate to https://localost:3000 to display your profile',
-        );
+        resolve(true);
       });
     });
 
-    return {
-      url: '/',
-    };
+    return 'Теперь можно сделать запрос к / чтобы получить профиль юзера';
   }
 
   @Get(['/connect/:provider', '/login/:provider'])
   @Redirect()
+  // заранее проверяем, что имя провайдера валидно
+  @UseGuards(AuthProviderGuard)
   async connect(@Param('provider') provider: Provider) {
     const providerInstance = this.providersService.findService(provider);
-    if (!providerInstance) {
-      throw new HttpException('Unknown provider', HttpStatus.BAD_REQUEST);
-    }
 
     return {
       url: providerInstance.getAuthUrl(),
     };
   }
 
-  // можно и post, я тут сделал так для простоты
+  // можно и post, я тут сделал так для простоты теста
   @Get('/logout')
   @UseGuards(AuthGuard)
   async logout(@Req() req: Request) {
-    req.session.destroy(() => {});
     return new Promise((resolve, reject) => {
-      req.session.save((err) => {
+      req.session.destroy((err) => {
         if (err) {
-          return reject(err);
+          reject(
+            new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR),
+          );
         }
-        resolve('All done, now navigate to https://localost:3000');
+        resolve(true);
       });
     });
   }

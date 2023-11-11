@@ -32,7 +32,7 @@ export class BaseService {
 
   constructor(private readonly opts: BaseProviderOpts) {}
 
-  protected extractUserInfo(data: any): BaseUserInfo {
+  protected async extractUserInfo(data: any): Promise<BaseUserInfo> {
     return {
       ...data,
       provider: this.opts.name,
@@ -112,8 +112,10 @@ export class BaseService {
     }
 
     const user = await userRequest.json();
+    const userData = await this.extractUserInfo(user);
+
     return {
-      ...this.extractUserInfo(user),
+      ...userData,
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token,
       provider: this.opts.name,
